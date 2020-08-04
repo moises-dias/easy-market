@@ -1,5 +1,7 @@
 {
   "name": "easy-market",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }
