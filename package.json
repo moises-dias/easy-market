@@ -27,6 +27,8 @@
     "@ionic/angular": "^5.0.0",
     "cordova-android": "^8.1.0",
     "cordova-browser": "^6.0.0",
+    "cordova-plugin-androidx": "^2.0.0",
+    "cordova-plugin-androidx-adapter": "^1.1.1",
     "cordova-plugin-camera": "^4.1.0",
     "cordova-plugin-fcm-with-dependecy-updated": "^7.0.9",
     "rxjs": "~6.5.1",
@@ -82,11 +84,13 @@
         "ANDROID_GRADLE_TOOLS_VERSION": "3.5.3",
         "ANDROID_GOOGLE_SERVICES_VERSION": "4.3.3",
         "ANDROID_DEFAULT_NOTIFICATION_ICON": "@mipmap/ic_launcher"
-      }
+      },
+      "cordova-plugin-androidx": {},
+      "cordova-plugin-androidx-adapter": {}
     },
     "platforms": [
-      "android",
-      "browser"
+      "browser",
+      "android"
     ]
   }
 }
