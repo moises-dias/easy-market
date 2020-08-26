@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Product } from '../models';
 import { FirebaseService } from '../firebase.service';
 import { AlertController } from '@ionic/angular';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -15,8 +16,11 @@ export class ProductDetailPage implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private firebaseService: FirebaseService,
+    private authService: AuthService,
     private alertCtrl: AlertController
-    ) { }
+    ) { 
+      this.authService.userMail.subscribe(mail => this.userMail = mail);
+    }
 
     product: Product = {title: '', price: '', description: '', images: [], vendor: ''};
     userMail: string = '';
@@ -30,10 +34,9 @@ export class ProductDetailPage implements OnInit {
   }
 
   sendMessage() {
-    this.firebaseService.newChat(this.product.title, 'mail', this.product.vendor)
+    this.firebaseService.newChat(this.product.title, this.userMail, this.product.vendor)
     .then((value) => {
       this.router.navigateByUrl("/chats-list/chat/"+value.id);
     });
   }
-
 }

@@ -13,7 +13,6 @@ import { AuthResponseData } from '../models';
 })
 export class AuthPage implements OnInit {
 
-  isLoading: boolean = false;
   isLogin: boolean = true;
 
   constructor(
@@ -26,7 +25,6 @@ export class AuthPage implements OnInit {
   ngOnInit() {}
 
   authenticate(email: string, password: string) {
-    this.isLoading = true;
     this.loadingCtrl
       .create({ keyboardClose: true, message: 'Logging in...' })
       .then(loadingEl => {
@@ -38,7 +36,6 @@ export class AuthPage implements OnInit {
           authObs = this.authService.signup(email, password);
         }
         authObs.subscribe(resData => {
-          this.isLoading = false;
           loadingEl.dismiss();
           this.router.navigateByUrl('/home');
         }, errRes => {

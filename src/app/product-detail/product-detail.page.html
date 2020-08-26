@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot='start'>
-      <ion-back-button defaultHref='/products'></ion-back-button>
+      <ion-back-button defaultHref='/home'></ion-back-button>
     </ion-buttons>
     <ion-title>Detalhes do produto</ion-title>
   </ion-toolbar>
@@ -36,11 +36,11 @@
       <p>{{ product.vendor }}</p>
   </ion-item>
 
-  <div class="buttons" *ngIf="product.vendor !== userMail && userMail !== ''">
+  <div class="buttons" *ngIf="product.vendor !== userMail && userMail !== null">
     <ion-button (click)="sendMessage()">Entrar em contato</ion-button>
     <ion-button>Comprar</ion-button>
   </div>
-  <div class="buttons" *ngIf="userMail === ''">
+  <div class="buttons" *ngIf="userMail === null">
     <ion-button expand="block" routerLink="/auth">Acesse sua conta para comprar</ion-button>
   </div>
   

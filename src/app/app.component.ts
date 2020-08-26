@@ -9,6 +9,8 @@ import { Router } from '@angular/router';
 
 import { MenuController } from '@ionic/angular';
 
+import { AuthService } from './auth/auth.service';
+
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -23,9 +25,12 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private router: Router,
-    private menu: MenuController
+    private menu: MenuController,
+    private authService: AuthService
   ) {
     this.initializeApp();
+    this.authService.userMail.subscribe(mail => this.userMail = mail);
+
   }
 
   initializeApp() {
