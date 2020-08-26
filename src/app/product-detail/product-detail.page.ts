@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Product } from '../models';
+import { FirebaseService } from '../firebase.service';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-product-detail',
@@ -8,13 +11,29 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class ProductDetailPage implements OnInit {
 
-  constructor(private route: ActivatedRoute) {
-    this.price = this.route.snapshot.params['price'];
-  }
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private firebaseService: FirebaseService,
+    private alertCtrl: AlertController
+    ) { }
 
-  price: any = '';
+    product: Product = {title: '', price: '', description: '', images: [], vendor: ''};
+    userMail: string = '';
 
   ngOnInit() {
+    this.route.paramMap.subscribe(paramMap => {
+      this.firebaseService.getProduct(paramMap.get('productId')).subscribe(
+        product => { this.product = product; }
+      );
+    });
+  }
+
+  sendMessage() {
+    this.firebaseService.newChat(this.product.title, 'mail', this.product.vendor)
+    .then((value) => {
+      this.router.navigateByUrl("/chats-list/chat/"+value.id);
+    });
   }
 
 }

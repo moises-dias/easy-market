@@ -1,5 +1,10 @@
 import { Component } from '@angular/core';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
+import { FirebaseService } from '../firebase.service';
+
+import { Observable } from 'rxjs';
+
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -8,6 +13,8 @@ import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 })
 export class HomePage {
   clickedImage: string;
+  items: Observable<any>;
+  userMail: string = "";
 
   options: CameraOptions = {
     quality: 30,
@@ -16,7 +23,14 @@ export class HomePage {
     mediaType: this.camera.MediaType.PICTURE
   }
 
-  constructor(private camera: Camera) { }
+  constructor(
+    private camera: Camera,
+    private firebaseService: FirebaseService,
+    private authService: AuthService
+  ) {
+      this.items = this.firebaseService.getProducts();
+      this.authService.userMail.subscribe(mail => this.userMail = mail);
+  }
 
   captureImage() {
     this.camera.getPicture(this.options).then((imageData) => {

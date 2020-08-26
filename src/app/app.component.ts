@@ -7,17 +7,23 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { FCM } from 'cordova-plugin-fcm-with-dependecy-updated/ionic';
 import { Router } from '@angular/router';
 
+import { MenuController } from '@ionic/angular';
+
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss']
 })
 export class AppComponent {
+
+  userMail: string = '';
+
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-    private router: Router
+    private router: Router,
+    private menu: MenuController
   ) {
     this.initializeApp();
   }
@@ -51,4 +57,9 @@ export class AppComponent {
 
     });
   }
+
+  close() {
+    this.menu.close();
+  }
+
 }

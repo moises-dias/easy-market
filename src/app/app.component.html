@@ -1,3 +1,59 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  <ion-menu side='start' menuId='m1'>
+
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>
+          {{this.userMail ? "Olá "+ this.userMail : "Acesse sua conta"}}
+        </ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content>
+      <ion-list>
+        <ion-item *ngIf="!this.userMail;else userOptions"
+                  lines='none'
+                  (click)="close()"
+                  [routerLink]="['/', 'auth']">
+          <ion-icon name='person-outline' slot='start'></ion-icon>
+          <ion-label>Acessar conta</ion-label>
+        </ion-item>
+
+        <ng-template #userOptions>
+          <ion-item lines='none'
+                    (click)="close()"
+                    [routerLink]="['/', 'new-product']">
+            <ion-icon name='add-outline' slot='start'></ion-icon>
+            <ion-label>Anunciar um produto</ion-label>
+          </ion-item>
+
+          <ion-item lines='none'
+                    (click)="close()"
+                    [routerLink]="['/', 'chats-list']">
+            <ion-icon name="chatbubble-outline" slot='start'></ion-icon>
+            <ion-label>Conversas</ion-label>
+          </ion-item>
+
+          <ion-item lines='none'>
+            <ion-icon name='cart-outline' slot='start'></ion-icon>
+            <ion-label>Histórico de compras</ion-label>
+          </ion-item>
+          
+          <ion-item lines='none'
+                    (click)="close()"
+                    [routerLink]="['/', 'vouchers']">
+            <ion-icon name='bookmarks-outline' slot='start'></ion-icon>
+            <ion-label>Vouchers</ion-label>
+          </ion-item>
+          
+          <ion-item lines='none'>
+            <ion-icon name='cash-outline' slot='start'></ion-icon>
+            <ion-label>Solicitações de compra</ion-label>
+          </ion-item>
+
+        </ng-template>
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+  <ion-router-outlet main></ion-router-outlet>
 </ion-app>

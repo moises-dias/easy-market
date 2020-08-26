@@ -1,15 +1,48 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
+    <ion-buttons slot='start'>
+      <ion-menu-button menu='m1'></ion-menu-button>
+    </ion-buttons>
     <ion-title>
-      Blank
+      {{this.userMail? "Olá "+this.userMail : "Bem-vindo ao EasyMarket"}}
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<!-- <ion-content>
   <ion-button (click)="captureImage()">
     Click Picture
   </ion-button>
 
   <img [src]="clickedImage" />
+</ion-content> -->
+
+<ion-content>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" size-sm="8" offset-sm="2">
+        
+        <p class='ion-text-center' *ngIf="(items | async)?.length==0">
+          No products found
+        </p>
+
+        <ion-list>
+          <ion-item *ngFor="let item of items | async" 
+                    [routerLink]="['/', 'home', 'product-detail', item.id]">
+            <ion-thumbnail slot="start">
+              <ion-img [src]=" 'data:image/png;base64,' + item.images[0]"
+                       ></ion-img>
+            </ion-thumbnail>
+            <ion-label>
+              <h1>{{ item.title }}</h1>
+              <h2>{{ item.price | currency}}</h2>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
+

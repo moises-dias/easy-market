@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "easy-market-e7746": {
+      "hosting": {
+        "app": [
+          "easy-market-e7746"
+        ]
+      }
+    }
+  }
+}
