@@ -1,9 +1,33 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot='start'>
+      <ion-back-button defaultHref='/home'></ion-back-button>
+    </ion-buttons>
     <ion-title>vouchers</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" size-sm="8" offset-sm="2">
+        <p class='ion-text-center' *ngIf="(vouchers | async)?.length==0">
+          No Vouchers found
+        </p>
+        <ion-list>
+          <ion-item *ngFor="let item of vouchers | async" 
+                    >
+            <ion-label>
+              <h1>{{ item.name }}</h1>
+              <h2>{{ "Quantidade: " + item.quantity }}</h2>
+              <h2 *ngIf="item.vendor === userMail">{{"Comprador: " + item.buyer}}</h2>
+              <h2 *ngIf="item.vendor !== userMail">{{"Vendedor: " + item.vendor}}</h2>
+              <ion-button (click)="discountVoucher( item.id, item.quantity - 1)"
+                          *ngIf="item.vendor === userMail">Descontar voucher</ion-button>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
