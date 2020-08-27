@@ -1,9 +1,65 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>new-product</ion-title>
+    <ion-buttons slot='start'>
+      <ion-back-button defaultHref='/home'></ion-back-button>
+    </ion-buttons>
+    <ion-title>Anunciar</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <form [formGroup]='form'>
+    <ion-grid>
 
+      <ion-row>
+        <ion-col size-sm='6' offset-sm='3'>
+          <ion-item>
+            <ion-label position='floating'>Nome</ion-label>
+            <ion-input type='text' formControlName="title"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size-sm='6' offset-sm='3'>
+          <ion-item>
+            <ion-label position='floating'>Preço</ion-label>
+            <ion-input type='number' formControlName="price"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size-sm='6' offset-sm='3'>
+          <ion-item>
+            <ion-label position='floating'>Descrição</ion-label>
+            <ion-textarea rows='3' formControlName="description"></ion-textarea>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+    </ion-grid>
+  </form>
+  
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <!-- <app-image-picker (imagePick)="onImagePicked($event)"></app-image-picker> -->
+        <ion-button (click)="captureImage()">
+          Adicionar Fotos
+        </ion-button>
+        <ion-button (click)='anunciar()'>Anunciar</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-slides [pager]="true" 
+              *ngIf="images.length > 0">
+		<ion-slide *ngFor="let image of images">
+			<ion-img class="image"
+               [src]=" 'data:image/png;base64,' + image">
+      </ion-img>
+		</ion-slide> 
+  </ion-slides>
+  
 </ion-content>

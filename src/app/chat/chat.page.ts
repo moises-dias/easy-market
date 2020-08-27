@@ -14,10 +14,10 @@ import { AuthService } from '../auth/auth.service';
 })
 export class ChatPage implements OnInit {
   messageId: string;
-  chat: Chat = {buyer: '', seller: '', product: '', messages: []};
+  chat: Chat = { buyer: '', seller: '', product: '', messages: [] };
   user: string = '';
   newMsg: string = '';
-  @ViewChild(IonContent, {static: true}) content: IonContent;
+  @ViewChild(IonContent, { static: true }) content: IonContent;
 
   constructor(
     private route: ActivatedRoute,
@@ -29,21 +29,21 @@ export class ChatPage implements OnInit {
     this.route.paramMap.subscribe(paramMap => {
       this.messageId = paramMap.get('messageId');
       firebaseService.getMessages(this.messageId).subscribe(chat => {
-        this.chat = chat; 
+        this.chat = chat;
         setTimeout(() => {
           this.content.scrollToBottom(200);
-        },200);
+        }, 200);
       });
       // this.user = this.userService.getUsrMail();
     });
-   }
+  }
 
-   sendMessage () {
+  sendMessage() {
     this.firebaseService.newMessage(this.messageId, this.user, this.newMsg, new Date().getTime().toString());
     this.newMsg = '';
     setTimeout(() => {
       this.content.scrollToBottom(200);
-    },200);
+    }, 200);
   }
 
   async presentPrompt() {
@@ -53,24 +53,24 @@ export class ChatPage implements OnInit {
       <p> Produto: ${this.chat.product}</p>
       <p>Comprador: ${this.chat.buyer}</p>
     `,
-    
-    inputs: [
-      {
-         name: 'quantity',
-         placeholder: 'Quantity',
-         type: 'number',
-         value: '1' 
-      },
-    ],
-    buttons: [
-      'Cancelar', 
-      {
-        text: 'Enviar Voucher',
-        handler: data => {
+
+      inputs: [
+        {
+          name: 'quantity',
+          placeholder: 'Quantity',
+          type: 'number',
+          value: '1'
+        },
+      ],
+      buttons: [
+        'Cancelar',
+        {
+          text: 'Enviar Voucher',
+          handler: data => {
             this.firebaseService.newVoucher(this.chat.product, this.chat.seller, this.chat.buyer, data.quantity);
             this.firebaseService.newMessage(this.messageId, "voucherSent", `${data.quantity} voucher(s) de ${this.chat.product} enviado`, new Date().getTime().toString());
-        }
-      }],
+          }
+        }],
     });
     await alert.present();
   }
