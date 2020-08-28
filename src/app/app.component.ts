@@ -57,8 +57,6 @@ export class AppComponent {
           this.router.navigate([data.landing_page, data.price])
         }
       });
-      // FCM.subscribeToTopic('people');
-      // FCM.unsubscribeFromTopic('marketing');
 
     });
   }
