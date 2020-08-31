@@ -25,6 +25,7 @@ export class ChatsListPage implements OnInit {
   ngOnInit() { }
 
   ionViewWillEnter() {
+    this.firebaseService.checkMessages(this.userMail);
     this.chats = this.firebaseService.getAllChats(this.userMail);
   }
 

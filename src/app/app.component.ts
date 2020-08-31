@@ -51,10 +51,12 @@ export class AppComponent {
         console.log(data);
         if (data.wasTapped) {
           console.log('received in background');
-          this.router.navigate([data.landing_page, data.price]);
+          this.router.navigate([data.landing_page]);
+          // this.router.navigate([data.landing_page, data.price]);
         } else {
           console.log('received in foreground');
-          this.router.navigate([data.landing_page, data.price])
+          // this.router.navigate([data.landing_page])
+          // this.router.navigate([data.landing_page, data.price])
         }
       });
 
@@ -62,6 +64,11 @@ export class AppComponent {
   }
 
   close() {
+    this.menu.close();
+  }
+
+  logout() {
+    this.authService.logout();
     this.menu.close();
   }
 

@@ -39,6 +39,7 @@ export class ChatPage implements OnInit {
   }
 
   sendMessage() {
+    this.firebaseService.notifyUser(this.user === this.chat.buyer ? this.chat.seller : this.chat.buyer);
     this.firebaseService.newMessage(this.messageId, this.user, this.newMsg, new Date().getTime().toString());
     this.newMsg = '';
     setTimeout(() => {

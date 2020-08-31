@@ -4,8 +4,9 @@ import * as firebase from 'firebase/app';
 
 import { of, combineLatest } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 
-import { Chat, Product, Voucher, Messages } from './models';
+import { Chat, Product, Voucher, Messages, UserData } from './models';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,8 @@ import { Chat, Product, Voucher, Messages } from './models';
 export class FirebaseService {
 
   constructor(
-    private firestore: AngularFirestore
+    private firestore: AngularFirestore,
+    private http: HttpClient
   ) {}
 
   newMessage(chatId: string, user: string, message: string, date: string): void {
@@ -96,6 +98,76 @@ export class FirebaseService {
     })
   }
 
+  onSignup (user: string, device: string){
+    this.firestore.collection("userData").doc(user).set({
+      unread: 0,
+      device: device
+    });
+  }
+
+  onLogout (user: string) {
+    this.firestore.collection("userData").doc(user).update({
+      device: ''
+    });
+  }
+
+  onLogin (user: string, device: string){
+    this.firestore.collection("userData").doc(user).update({
+      device: device
+    });
+  }
+
+  checkMessages(user: string) {
+    this.firestore.collection("userData").doc(user).update({
+      unread: 0
+    });
+  }
+
+  notifyUser(userToNotify: string) {
+
+    this.firestore.collection("userData").doc(userToNotify).get()
+    .pipe(
+      map( res => {
+        const data = res.data() as UserData;
+        return data;
+      }))
+    .subscribe(
+      data => { 
+        this.firestore.collection("userData").doc(userToNotify).update({
+          unread: data.unread + 1
+        });
+        if(data.device !== ''){
+          this.http.post<any>('https://fcm.googleapis.com/fcm/send', 
+          {
+            "notification":{
+              "title":`Você tem ${data.unread + 1} novas mensagens!`,
+              "body":"Continue suas compras e vendas no easy market",
+              "sound":"default",
+              "click_action":"FCM_PLUGIN_ACTIVITY",
+              "icon":"fcm_push_icon"
+            },
+            "data":{
+              "landing_page":"chats-list",
+              "price":"$3,000.00"
+            },
+            "to":data.device,
+            "priority":"high",
+            "restricted_package_name":""
+          },
+          { headers: 
+            {'Authorization': 
+              'key=AAAAJ-PpGdY:APA91bGDjfDlgIzw5tPpOscVEEX2Peb3g_MNZrQ_xEShQ2UDYuz9qYueYZ2DRm7Zz8WNCfn4MsXefbE-R4h_9Phjn_MTlg7883WCtH0ItT7wbt_WulO_rNjmb4jah96mHPiARPLPemS_',
+              'Content-Type': 'application/json' 
+            }
+          }
+          ).subscribe(data => {
+            // console.log(data);
+          })
+        }
+      }
+    );
+  }
+    
   getVouchers(usr: string) {
     const buyer = this.firestore
       .collection("vouchers", ref => ref.where("buyer","==",usr));
@@ -117,6 +189,7 @@ export class FirebaseService {
   }
 
   newChat (product: string, buyer: string, seller: string) {
+    this.notifyUser(seller);
     return this.firestore.collection('chats').add({
       product: product,
       buyer: buyer,
