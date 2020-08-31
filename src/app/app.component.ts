@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { MenuController } from '@ionic/angular';
 
 import { AuthService } from './auth/auth.service';
+import { FirebaseService } from './firebase.service';
 
 @Component({
   selector: 'app-root',
@@ -19,6 +20,8 @@ import { AuthService } from './auth/auth.service';
 export class AppComponent {
 
   userMail: string = '';
+  unread: number = 0;
+  isLogged: boolean = false;
 
   constructor(
     private platform: Platform,
@@ -26,10 +29,19 @@ export class AppComponent {
     private statusBar: StatusBar,
     private router: Router,
     private menu: MenuController,
-    private authService: AuthService
+    private authService: AuthService,
+    private firebaseService: FirebaseService
   ) {
     this.initializeApp();
-    this.authService.userMail.subscribe(mail => this.userMail = mail);
+    this.authService.userMail.subscribe(mail => {
+      this.userMail = mail;
+      if(mail) {
+        this.firebaseService.getUnreadNumber(mail).subscribe(unread => this.unread = unread);
+        this.isLogged = true;
+      } else {
+        this.isLogged = false;
+      }
+    });
 
   }
 
@@ -68,6 +80,7 @@ export class AppComponent {
   }
 
   logout() {
+    this.firebaseService.onLogout(this.userMail);
     this.authService.logout();
     this.menu.close();
   }

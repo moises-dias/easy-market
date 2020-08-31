@@ -35,6 +35,20 @@ export class FirebaseService {
     )
   }
 
+  getUnreadNumber(mail: string) {
+    return this.firestore.collection("userData").doc(mail).snapshotChanges()
+    .pipe(
+      map( res => {
+        const data = res.payload.data() as UserData;
+        if(data) {
+          return data.unread;
+        } else {
+          return 0;
+        }
+      })
+    )
+  }
+
   getMessages(id: string) {
     return this.firestore.collection("chats").doc(id).snapshotChanges()
     .pipe(

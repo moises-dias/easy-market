@@ -27,11 +27,13 @@
             <ion-label>Anunciar um produto</ion-label>
           </ion-item>
 
-          <ion-item lines='none'
+          <ion-item class='chats'
+                    lines='none'
                     (click)="close()"
                     [routerLink]="['/', 'chats-list']">
             <ion-icon name="chatbubble-outline" slot='start'></ion-icon>
             <ion-label>Conversas</ion-label>
+              <ion-badge *ngIf="isLogged">{{ unread }}</ion-badge>
           </ion-item>
 
           <ion-item lines='none'>
@@ -49,6 +51,12 @@
           <ion-item lines='none'>
             <ion-icon name='cash-outline' slot='start'></ion-icon>
             <ion-label>Solicitações de compra</ion-label>
+          </ion-item>
+          
+          <ion-item lines='none'
+                    (click)="logout()">
+            <ion-icon name='close-circle-outline' slot='start'></ion-icon>
+            <ion-label>Sair da conta</ion-label>
           </ion-item>
 
         </ng-template>

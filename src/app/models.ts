@@ -63,3 +63,8 @@ export interface AuthResponseData {
     expiresIn: string;
     registered?: boolean;
 }
+
+export interface UserData {
+    device: string;
+    unread: number;
+}

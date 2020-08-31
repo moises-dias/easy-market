@@ -1,0 +1,11 @@
+.chats {
+    ion-label {
+        flex-grow: 0.4;
+    }
+    ion-badge {
+        margin-bottom: 10px;
+        font-size: 0.6em;
+        --padding-start: 5px;
+        --padding-end: 5px;
+    }
+}
