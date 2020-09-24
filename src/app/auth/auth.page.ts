@@ -4,7 +4,10 @@ import { Router } from '@angular/router';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { NgForm } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { AuthResponseData } from '../models';
+import { AuthResponseData, completeAddress } from '../models';
+import { FirebaseService} from '../firebase.service';
+import { MapboxService, Feature } from '../mapbox.service';
+import { FCM } from 'cordova-plugin-fcm-with-dependecy-updated/ionic';
 
 @Component({
   selector: 'app-auth',
@@ -14,17 +17,24 @@ import { AuthResponseData } from '../models';
 export class AuthPage implements OnInit {
 
   isLogin: boolean = true;
+  addresses: string[] = [];
+  completeAddresses: completeAddress[] = [];
+  selectedAddress: completeAddress = null;
+  selectedAddressText: string = '';
+  addressSet = false;
 
   constructor(
     private authService: AuthService,
     private router: Router,
     private loadingCtrl: LoadingController,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private firebaseService: FirebaseService,
+    private mapboxService: MapboxService
   ) { }
 
   ngOnInit() {}
 
-  authenticate(email: string, password: string) {
+  authenticate(email: string, password: string, address?: string) {
     this.loadingCtrl
       .create({ keyboardClose: true, message: 'Logging in...' })
       .then(loadingEl => {
@@ -37,6 +47,19 @@ export class AuthPage implements OnInit {
         }
         authObs.subscribe(resData => {
           loadingEl.dismiss();
+          // FCM.getToken().then(token => {
+          //   console.log(token);
+          //   if (this.isLogin) {
+          //     this.firebaseService.onLogin(email, token);
+          //   } else {
+          //     this.firebaseService.onSignup(email, token);
+          //   }
+          // });
+          console.log(address)
+          if(address) {
+            console.log('adicionar endereço no bd')
+          }
+
           this.router.navigateByUrl('/home');
         }, errRes => {
           loadingEl.dismiss();
@@ -60,11 +83,17 @@ export class AuthPage implements OnInit {
   
   onSubmit(form: NgForm) {
     if (!form.valid) {
+      console.log('invalid')
       return;
     }
     const email = form.value.email;
     const password = form.value.password;
-    this.authenticate(email, password);
+    const address = form.value.address;
+    // form.reset();
+    // console.log(address)
+    this.authenticate(email, password, address);
+    // form.reset();
+    console.log('RESETOU')
   }
 
   private showAlert(message: string) {
@@ -75,6 +104,36 @@ export class AuthPage implements OnInit {
         buttons: ['Okay']
       })
       .then(alertEl => alertEl.present());
+  }
+
+  search(event: any) {
+    if (this.addressSet){
+      this.addressSet = false;
+      console.log('nao muda agr')
+      return;
+    }
+    console.log(event.target.value)
+    const searchTerm = event.target.value.toLowerCase();
+    if (searchTerm && searchTerm.length > 0) {
+      this.mapboxService
+        .search_word(searchTerm)
+        .subscribe((features: Feature[]) => {
+          this.completeAddresses = features.map(feat =>  {
+            return {address: feat.place_name, lat: feat.center[1], long: feat.center[0]}
+          });
+          console.log(this.completeAddresses)
+        });
+    } else {
+      this.completeAddresses = [];
+    }
+  }
+
+  onSelect(address) {
+    this.selectedAddress = address;
+    this.completeAddresses = [];
+    this.selectedAddressText = this.selectedAddress.address;
+    console.log(this.selectedAddress)
+    this.addressSet = true;
   }
 
 }

@@ -68,3 +68,9 @@ export interface UserData {
     device: string;
     unread: number;
 }
+
+export interface completeAddress {
+    address: string;
+    lat: number;
+    long: number;
+}

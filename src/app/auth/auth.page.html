@@ -10,6 +10,7 @@
       <ion-row>
         <ion-col size-sm="6" offset-sm="3">
           <ion-list>
+
             <ion-item>
               <ion-label position="floating">E-Mail</ion-label>
               <ion-input type="email"
@@ -26,6 +27,7 @@
                 Should be a valid email address.
               </ion-label>
             </ion-item>
+
             <ion-item>
               <ion-label position="floating">Password</ion-label>
               <ion-input type="password"
@@ -42,9 +44,56 @@
                 Should at least be 6 characters long.
               </ion-label>
             </ion-item>
+
+            <ion-item>
+              <ion-label position="floating">Address</ion-label>
+              <ion-input [(ngModel)]="selectedAddressText"
+                         name="address"
+                         #addressCtrl="ngModel"
+                         id="addressInput"
+                         (ionChange)="search($event)"
+                         debounce=500>
+              </ion-input>
+            </ion-item>
+            <!-- <ion-item *ngIf="!emailCtrl.valid && emailCtrl.touched"
+                      lines="none">
+              <ion-label>
+                Should be a valid email address.
+              </ion-label> 
+            </ion-item> -->
+            <ion-item *ngIf="completeAddresses.length > 0">
+              <ion-list lines="none" *ngIf="completeAddresses.length > 0">
+                <ion-item button *ngFor="let address of completeAddresses" (click)="onSelect(address)">
+                  <ion-icon name="pin"></ion-icon>
+                  {{ address.address }}
+                </ion-item>
+              </ion-list>
+            </ion-item>
+
+            <!-- <ion-item *ngIf="selectedAddress?.address">
+              <ion-label>{{selectedAddress?.address}}</ion-label>
+            </ion-item> -->
+
+            <!-- <ion-item>
+              <ion-label style="margin-bottom: 20px;" position="floating">Address</ion-label>
+              <ion-searchbar  ngModel
+              name="address"
+              required
+              #addressCtrl="ngModel" debounce=500 (ionChange)="search($event)" ></ion-searchbar>
+            </ion-item>
+            <ion-item *ngIf="completeAddresses.length > 0">
+              <ion-list lines="none" *ngIf="completeAddresses.length > 0">
+                <ion-item button *ngFor="let address of completeAddresses" (click)="onSelect(address)">
+                  <ion-icon name="pin"></ion-icon>
+                  {{ address.address }}
+                </ion-item>
+              </ion-list>
+              
+            </ion-item> -->
           </ion-list>
         </ion-col>
       </ion-row>
+
       <ion-row>
         <ion-col size-sm="6" offset-sm="3">
           <ion-button type="button" 

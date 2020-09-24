@@ -64,11 +64,13 @@ export class FirebaseService {
     return this.firestore.collection('products').snapshotChanges()
     .pipe(
       map( res => {
-        return res.map( a => {
+        console.log(res);
+        var filtered = res.map( a => {
           const data = a.payload.doc.data() as Product; 
           const id = a.payload.doc.id;
           return { id, ...data };
         })
+        return filtered.sort((a,b) => (a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0)); 
       })
     )
   }
@@ -116,6 +118,14 @@ export class FirebaseService {
     this.firestore.collection("userData").doc(user).set({
       unread: 0,
       device: device
+    });
+  }
+
+  setUserAddress (user: string, address: string){
+    this.firestore.collection("userData").doc(user).update({
+      address: address,
+      lat: 'device',
+      long: 'device'
     });
   }
 
