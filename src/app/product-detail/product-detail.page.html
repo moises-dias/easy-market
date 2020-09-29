@@ -32,6 +32,11 @@
   </ion-item>
 
   <ion-item>
+      <p>Localização:</p>
+      <p>{{ (product.bairro ? product.bairro + " - " : "") + product.cidade }}</p>
+  </ion-item>
+
+  <ion-item>
       <p>Vendedor:</p>
       <p>{{ product.vendor }}</p>
   </ion-item>

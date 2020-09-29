@@ -11,6 +11,14 @@ export interface MapboxOutput {
 export interface Feature {
   place_name: string;
   center: number[];
+  context: AddressInfo[];
+}
+
+export interface AddressInfo {
+  id: string;
+  text: string;
+  wikidata?: string;
+  short_code?: string;
 }
 
 @Injectable({
@@ -25,7 +33,8 @@ export class MapboxService {
     return this.http.get(url + query + '.json?types=address&access_token='
     + environment.mapbox.accessToken)
     .pipe(map((res: MapboxOutput) => {
-      console.log(res)
+      console.log('checar o context')
+      console.log(res.features)
       return res.features;
     }))
   }

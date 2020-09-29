@@ -4,6 +4,7 @@ import { FirebaseService } from '../firebase.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
+import { completeAddress } from '../models';
 
 
 @Component({
@@ -13,6 +14,7 @@ import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 })
 export class NewProductPage implements OnInit {
   userMail: string = '';
+  userAddress: completeAddress = null;
   form: FormGroup;
   images: string[] = [];
 
@@ -32,6 +34,8 @@ export class NewProductPage implements OnInit {
     private camera: Camera
   ) { 
     this.authService.userMail.subscribe(mail => this.userMail = mail);
+    this.authService.userAddress.subscribe(address => this.userAddress = address);
+    console.log(this.userAddress);
   }
 
   ngOnInit() {
@@ -58,7 +62,11 @@ export class NewProductPage implements OnInit {
       this.userMail,
       this.form.value.price,
       this.form.value.description,
-      this.images
+      this.images,
+      this.userAddress.bairro,
+      this.userAddress.cidade,
+      this.userAddress.lat,
+      this.userAddress.long
     );
     this.form.reset();
     this.router.navigateByUrl('/home');

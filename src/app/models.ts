@@ -20,7 +20,11 @@ export interface Product {
     price: string,
     description: string,
     images: string[],
-    vendor: string
+    vendor: string,
+    lat?: number,
+    long?: number,
+    bairro?: string,
+    cidade?: string
 }
 
 export interface Voucher {
@@ -43,7 +47,12 @@ export class User {
         public id: string,
         public email: string,
         private _token: string,
-        private tokenExpirationDate: Date
+        private tokenExpirationDate: Date,
+        public address?: string,
+        public cidade?: string,
+        public bairro?: string,
+        public lat?: number,
+        public long?: number
     ) {}
 
     get token() {
@@ -67,10 +76,17 @@ export interface AuthResponseData {
 export interface UserData {
     device: string;
     unread: number;
+    address?: string,
+    cidade?: string,
+    bairro?: string,
+    lat?: number,
+    long?: number
 }
 
 export interface completeAddress {
     address: string;
+    cidade: string;
+    bairro: string;
     lat: number;
     long: number;
 }

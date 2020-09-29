@@ -6,7 +6,7 @@ import { of, combineLatest } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 
-import { Chat, Product, Voucher, Messages, UserData } from './models';
+import { Chat, Product, Voucher, Messages, UserData, completeAddress } from './models';
 
 @Injectable({
   providedIn: 'root'
@@ -49,6 +49,28 @@ export class FirebaseService {
     )
   }
 
+  getUserAddress(mail: string) {
+    return this.firestore.collection("userData").doc(mail).snapshotChanges()
+    .pipe(
+      map( res => {
+        const data = res.payload.data() as UserData;
+        console.log('inside getuseraddress')
+        console.log(data)
+        if(data) {
+          return {
+            address: data.address,
+            cidade: data.cidade,
+            bairro: data.bairro,
+            lat: data.lat,
+            long: data.long
+          } as completeAddress;
+        } else {
+          return null;
+        }
+      })
+    )
+  }
+
   getMessages(id: string) {
     return this.firestore.collection("chats").doc(id).snapshotChanges()
     .pipe(
@@ -60,19 +82,44 @@ export class FirebaseService {
 
   }
 
-  getProducts() {
+  getProducts(userAddress: completeAddress) {
     return this.firestore.collection('products').snapshotChanges()
     .pipe(
       map( res => {
-        console.log(res);
+        // console.log(res);
         var filtered = res.map( a => {
           const data = a.payload.doc.data() as Product; 
           const id = a.payload.doc.id;
           return { id, ...data };
         })
-        return filtered.sort((a,b) => (a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0)); 
+        // return filtered.sort((a,b) => (a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0)); 
+        console.log('DENTRO DA GETPRODUCTS NO FIREBASE SERVICE')
+        console.log(userAddress);
+        if(userAddress) {
+          console.log('FILTROU POR DISTANCIA')
+          return filtered.sort((a,b) => (this.distInKm(a.lat, a.long, userAddress.lat, userAddress.long) > this.distInKm(b.lat, b.long, userAddress.lat, userAddress.long)) ? 1 : -1); 
+        }
+        console.log('FILTROU ALFABETICO')
+        return filtered.sort((a,b) => (a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0));
       })
     )
+  }
+
+  distInKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
+    var deg2Rad = deg => {
+      return deg * Math.PI / 180;
+    }
+
+    var r = 6371; // Radius of the earth in km
+    var dLat = deg2Rad(lat2 - lat1);
+    var dLon = deg2Rad(lon2 - lon1);
+    var a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2Rad(lat1)) * Math.cos(deg2Rad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = r * c; // Distance in km
+    return d;
   }
 
   getAllChats(usr: string) {
@@ -95,13 +142,17 @@ export class FirebaseService {
     )
   }
 
-  newProduct (title: string, vendor: string, price: number, description: string, images: string[]) {
+  newProduct (title: string, vendor: string, price: number, description: string, images: string[], bairro: string, cidade: string, lat: number, long: number) {
     this.firestore.collection('products').add({
       title: title,
       vendor: vendor,
       price: price,
       description: description,
-      images: images
+      images: images,
+      lat: lat,
+      long: long,
+      bairro: bairro,
+      cidade: cidade
     })
   }
 
@@ -115,19 +166,33 @@ export class FirebaseService {
   }
 
   onSignup (user: string, device: string){
+    console.log('signup')
     this.firestore.collection("userData").doc(user).set({
       unread: 0,
       device: device
     });
   }
 
-  setUserAddress (user: string, address: string){
-    this.firestore.collection("userData").doc(user).update({
-      address: address,
-      lat: 'device',
-      long: 'device'
+  setLocation (user: string, address: completeAddress){
+    console.log('address on db')
+    
+    console.log(address)
+    this.firestore.collection("userData").doc(user).set({
+      address: address.address,
+      lat: address.lat,
+      long: address.long,
+      bairro: address.bairro,
+      cidade: address.cidade
     });
   }
+
+  // setUserAddress (user: string, address: string){
+  //   this.firestore.collection("userData").doc(user).update({
+  //     address: address,
+  //     lat: 'device',
+  //     long: 'device'
+  //   });
+  // }
 
   onLogout (user: string) {
     this.firestore.collection("userData").doc(user).update({
@@ -164,7 +229,7 @@ export class FirebaseService {
           this.http.post<any>('https://fcm.googleapis.com/fcm/send', 
           {
             "notification":{
-              "title":`Você tem ${data.unread + 1} novas mensagens!`,
+              "title":`Você tem ${data.unread + 1} nova${data.unread > 0 ? 's' : ''} mensage${data.unread > 0 ? 'ns' : 'm'}!`,
               "body":"Continue suas compras e vendas no easy market",
               "sound":"default",
               "click_action":"FCM_PLUGIN_ACTIVITY",

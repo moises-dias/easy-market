@@ -34,7 +34,7 @@ export class AuthPage implements OnInit {
 
   ngOnInit() {}
 
-  authenticate(email: string, password: string, address?: string) {
+  authenticate(email: string, password: string, address?: completeAddress) {
     this.loadingCtrl
       .create({ keyboardClose: true, message: 'Logging in...' })
       .then(loadingEl => {
@@ -43,24 +43,31 @@ export class AuthPage implements OnInit {
         if (this.isLogin) {
           authObs = this.authService.login(email, password);
         } else {
-          authObs = this.authService.signup(email, password);
+          authObs = this.authService.signup(email, password, address);
         }
         authObs.subscribe(resData => {
-          loadingEl.dismiss();
-          // FCM.getToken().then(token => {
-          //   console.log(token);
-          //   if (this.isLogin) {
-          //     this.firebaseService.onLogin(email, token);
-          //   } else {
-          //     this.firebaseService.onSignup(email, token);
-          //   }
-          // });
+          setTimeout(() => 
+          {
+            loadingEl.dismiss();
+            this.router.navigateByUrl('/home');
+            // DESCOMENTAR PARA RODAR NO CELULAR
+            // FCM.getToken().then(token => {
+            //   console.log(token);
+            //   if (this.isLogin) {
+            //     this.firebaseService.onLogin(email, token);
+            //   } else {
+            //     this.firebaseService.onSignup(email, token);
+            //   }
+            // });
+          },
+          1000);
           console.log(address)
           if(address) {
             console.log('adicionar endereço no bd')
+            this.firebaseService.setLocation(email, address)
           }
 
-          this.router.navigateByUrl('/home');
+          //this.router.navigateByUrl('/home');
         }, errRes => {
           loadingEl.dismiss();
           const code = errRes.error.error.message;
@@ -88,7 +95,7 @@ export class AuthPage implements OnInit {
     }
     const email = form.value.email;
     const password = form.value.password;
-    const address = form.value.address;
+    const address = this.selectedAddress;
     // form.reset();
     // console.log(address)
     this.authenticate(email, password, address);
@@ -119,7 +126,18 @@ export class AuthPage implements OnInit {
         .search_word(searchTerm)
         .subscribe((features: Feature[]) => {
           this.completeAddresses = features.map(feat =>  {
-            return {address: feat.place_name, lat: feat.center[1], long: feat.center[0]}
+            let place = ''
+            let neighborhood = ''
+            for (let entry of feat.context) {
+              //console.log(entry)
+              if(entry.id.includes('place')) {
+                place = entry.text;
+              }
+              else if (entry.id.includes('neighborhood')) {
+                neighborhood = entry.text;
+              }
+            }
+            return {address: feat.place_name, cidade: place, bairro: neighborhood, lat: feat.center[1], long: feat.center[0]}
           });
           console.log(this.completeAddresses)
         });
@@ -132,6 +150,7 @@ export class AuthPage implements OnInit {
     this.selectedAddress = address;
     this.completeAddresses = [];
     this.selectedAddressText = this.selectedAddress.address;
+    console.log('completo')
     console.log(this.selectedAddress)
     this.addressSet = true;
   }
