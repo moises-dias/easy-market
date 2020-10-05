@@ -35,7 +35,7 @@ export class NewProductPage implements OnInit {
   ) { 
     this.authService.userMail.subscribe(mail => this.userMail = mail);
     this.authService.userAddress.subscribe(address => this.userAddress = address);
-    console.log(this.userAddress);
+    // console.log(this.userAddress);
   }
 
   ngOnInit() {

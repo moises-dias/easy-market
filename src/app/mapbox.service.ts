@@ -33,8 +33,8 @@ export class MapboxService {
     return this.http.get(url + query + '.json?types=address&access_token='
     + environment.mapbox.accessToken)
     .pipe(map((res: MapboxOutput) => {
-      console.log('checar o context')
-      console.log(res.features)
+      // console.log('checar o context')
+      // console.log(res.features)
       return res.features;
     }))
   }

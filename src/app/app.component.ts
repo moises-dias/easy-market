@@ -50,27 +50,27 @@ export class AppComponent {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
 
-      
-      FCM.getToken().then(token => {
-        console.log(token);
-      });
+      // DESCOMENTAR PARA RODAR NO CELULAR
+      // FCM.getToken().then(token => {
+      //   // console.log(token);
+      // });
 
-      FCM.onTokenRefresh().subscribe(token => {
-        console.log(token);
-      });
+      // FCM.onTokenRefresh().subscribe(token => {
+      //   // console.log(token);
+      // });
 
-      FCM.onNotification().subscribe(data => {
-        console.log(data);
-        if (data.wasTapped) {
-          console.log('received in background');
-          this.router.navigate([data.landing_page]);
-          // this.router.navigate([data.landing_page, data.price]);
-        } else {
-          console.log('received in foreground');
-          // this.router.navigate([data.landing_page])
-          // this.router.navigate([data.landing_page, data.price])
-        }
-      });
+      // FCM.onNotification().subscribe(data => {
+      //   // console.log(data);
+      //   if (data.wasTapped) {
+      //     // console.log('received in background');
+      //     this.router.navigate([data.landing_page]);
+      //     // this.router.navigate([data.landing_page, data.price]);
+      //   } else {
+      //     // console.log('received in foreground');
+      //     // this.router.navigate([data.landing_page])
+      //     // this.router.navigate([data.landing_page, data.price])
+      //   }
+      // });
 
     });
   }

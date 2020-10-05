@@ -31,8 +31,8 @@ export class HomePage {
     private firebaseService: FirebaseService,
     private authService: AuthService
   ) {
-      console.log('CONSTRUTOR FORA DO TIMEOUT')
-      console.log(this.userAddress)
+      // console.log('CONSTRUTOR FORA DO TIMEOUT')
+      // console.log(this.userAddress)
       this.authService.userAddress.subscribe((address) => {
         this.userAddress = address;
         this.items = this.firebaseService.getProducts(this.userAddress);
@@ -40,13 +40,13 @@ export class HomePage {
       this.authService.userMail.subscribe((mail) => {
         this.userMail = mail
       });
-      setTimeout(() => 
-      {
-        console.log('DENTRO DO TIMEOUT INDO PRO GETPRODUCTS')
-        console.log(this.userAddress)
-        //this.items = this.firebaseService.getProducts(this.userAddress);
-      },
-      3000);
+      // setTimeout(() => 
+      // {
+      //   console.log('DENTRO DO TIMEOUT INDO PRO GETPRODUCTS')
+      //   console.log(this.userAddress)
+      //   //this.items = this.firebaseService.getProducts(this.userAddress);
+      // },
+      // 3000);
       // this.items = this.firebaseService.getProducts(this.userAddress);
   }
 

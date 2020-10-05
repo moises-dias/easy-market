@@ -52,19 +52,23 @@ export class AuthPage implements OnInit {
             this.router.navigateByUrl('/home');
             // DESCOMENTAR PARA RODAR NO CELULAR
             // FCM.getToken().then(token => {
-            //   console.log(token);
+            //   // console.log(token);
             //   if (this.isLogin) {
             //     this.firebaseService.onLogin(email, token);
             //   } else {
-            //     this.firebaseService.onSignup(email, token);
+            //     // this.firebaseService.onSignup(email, token);
+            //     this.firebaseService.setLocation(email, address, token)
             //   }
             // });
+            // DESCOMENTAR PARA RODAR NO BROWSER
+            // this.firebaseService.setLocation(email, address)
+
           },
           1000);
-          console.log(address)
+          // console.log(address)
           if(address) {
-            console.log('adicionar endereço no bd')
-            this.firebaseService.setLocation(email, address)
+            // console.log('adicionar endereço no bd')
+            // this.firebaseService.setLocation(email, address)
           }
 
           //this.router.navigateByUrl('/home');
@@ -100,7 +104,7 @@ export class AuthPage implements OnInit {
     // console.log(address)
     this.authenticate(email, password, address);
     // form.reset();
-    console.log('RESETOU')
+    // console.log('RESETOU')
   }
 
   private showAlert(message: string) {
@@ -116,10 +120,10 @@ export class AuthPage implements OnInit {
   search(event: any) {
     if (this.addressSet){
       this.addressSet = false;
-      console.log('nao muda agr')
+      // console.log('nao muda agr')
       return;
     }
-    console.log(event.target.value)
+    // console.log(event.target.value)
     const searchTerm = event.target.value.toLowerCase();
     if (searchTerm && searchTerm.length > 0) {
       this.mapboxService
@@ -139,7 +143,7 @@ export class AuthPage implements OnInit {
             }
             return {address: feat.place_name, cidade: place, bairro: neighborhood, lat: feat.center[1], long: feat.center[0]}
           });
-          console.log(this.completeAddresses)
+          // console.log(this.completeAddresses)
         });
     } else {
       this.completeAddresses = [];
@@ -150,8 +154,8 @@ export class AuthPage implements OnInit {
     this.selectedAddress = address;
     this.completeAddresses = [];
     this.selectedAddressText = this.selectedAddress.address;
-    console.log('completo')
-    console.log(this.selectedAddress)
+    // console.log('completo')
+    // console.log(this.selectedAddress)
     this.addressSet = true;
   }
 

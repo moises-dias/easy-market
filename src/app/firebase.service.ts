@@ -54,8 +54,8 @@ export class FirebaseService {
     .pipe(
       map( res => {
         const data = res.payload.data() as UserData;
-        console.log('inside getuseraddress')
-        console.log(data)
+        // console.log('inside getuseraddress')
+        // console.log(data)
         if(data) {
           return {
             address: data.address,
@@ -93,13 +93,13 @@ export class FirebaseService {
           return { id, ...data };
         })
         // return filtered.sort((a,b) => (a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0)); 
-        console.log('DENTRO DA GETPRODUCTS NO FIREBASE SERVICE')
-        console.log(userAddress);
+        // console.log('DENTRO DA GETPRODUCTS NO FIREBASE SERVICE')
+        // console.log(userAddress);
         if(userAddress) {
-          console.log('FILTROU POR DISTANCIA')
+          // console.log('FILTROU POR DISTANCIA')
           return filtered.sort((a,b) => (this.distInKm(a.lat, a.long, userAddress.lat, userAddress.long) > this.distInKm(b.lat, b.long, userAddress.lat, userAddress.long)) ? 1 : -1); 
         }
-        console.log('FILTROU ALFABETICO')
+        // console.log('FILTROU ALFABETICO')
         return filtered.sort((a,b) => (a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0));
       })
     )
@@ -166,23 +166,24 @@ export class FirebaseService {
   }
 
   onSignup (user: string, device: string){
-    console.log('signup')
+    // console.log('signup')
     this.firestore.collection("userData").doc(user).set({
       unread: 0,
       device: device
     });
   }
 
-  setLocation (user: string, address: completeAddress){
-    console.log('address on db')
-    
-    console.log(address)
+  setLocation (user: string, address: completeAddress, device?: string){
+    // console.log('address on db')
+    // console.log(address)
     this.firestore.collection("userData").doc(user).set({
       address: address.address,
       lat: address.lat,
       long: address.long,
       bairro: address.bairro,
-      cidade: address.cidade
+      cidade: address.cidade,
+      device: device? device : '',
+      unread: 0
     });
   }
 
